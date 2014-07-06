@@ -11,6 +11,10 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
+	<scm>
+		<developerConnection>scm:git:ssh://git@github.com:ucam-cl-dtg/resteasy-exception-chains.git</developerConnection>
+	</scm>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
