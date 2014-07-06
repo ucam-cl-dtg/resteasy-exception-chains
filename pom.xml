@@ -12,7 +12,7 @@
 	</properties>
 
 	<scm>
-		<developerConnection>scm:git:ssh://git@github.com:ucam-cl-dtg/resteasy-exception-chains.git</developerConnection>
+		<developerConnection>scm:git:ssh://git@github.com/ucam-cl-dtg/resteasy-exception-chains.git</developerConnection>
 	</scm>
 
 	<dependencies>
