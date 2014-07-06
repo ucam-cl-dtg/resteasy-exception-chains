@@ -12,7 +12,7 @@
 	</properties>
 
 	<dependencies>
- 		<dependency>
+		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jaxrs</artifactId>
 			<version>${resteasy.version}</version>
@@ -22,7 +22,7 @@
 			<artifactId>resteasy-jackson-provider</artifactId>
 			<version>${resteasy.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -50,4 +50,17 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<distributionManagement>
+		<repository>
+			<id>dtg-code</id>
+			<name>RepositoryProxy</name>
+			<url>http://dtg-maven.cl.cam.ac.uk/content/repositories/releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>dtg-code</id>
+			<name>RepositoryProxy</name>
+			<url>http://dtg-maven.cl.cam.ac.uk/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
 </project>
