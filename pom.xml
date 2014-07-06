@@ -5,6 +5,7 @@
 	<artifactId>resteasy-exception-chains</artifactId>
 	<packaging>jar</packaging>
 	<version>1.0-SNAPSHOT</version>
+	<name>resteasy-exception-chains</name>
 
 	<properties>
 		<resteasy.version>3.0.8.Final</resteasy.version>
