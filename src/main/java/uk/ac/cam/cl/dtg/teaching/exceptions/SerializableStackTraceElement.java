@@ -26,24 +26,30 @@ public class SerializableStackTraceElement {
 	@JsonSerialize
 	private int lineNumber;
 
+	@JsonSerialize
+	private String host;
+	
 	@JsonCreator
 	public SerializableStackTraceElement(
 			@JsonProperty("className") String className,
 			@JsonProperty("methodName") String methodName,
 			@JsonProperty("fileName") String fileName,
-			@JsonProperty("lineNumber") int lineNumber) {
+			@JsonProperty("lineNumber") int lineNumber,
+			@JsonProperty("host") String host) {
 		super();
 		this.className = className;
 		this.methodName = methodName;
 		this.fileName = fileName;
 		this.lineNumber = lineNumber;
+		this.host = host;
 	}
 
-	public SerializableStackTraceElement(StackTraceElement e) {
+	public SerializableStackTraceElement(StackTraceElement e, String host) {
 		this.className = e.getClassName();
 		this.methodName = e.getMethodName();
 		this.fileName = e.getFileName();
 		this.lineNumber = e.getLineNumber();
+		this.host = host;
 	}
 
 	public SerializableStackTraceElement() {
@@ -81,12 +87,23 @@ public class SerializableStackTraceElement {
 		this.lineNumber = lineNumber;
 	}
 
+	public String getHost(String host) {
+		return host;
+	}
+	
+	public void setHost(String host) {
+		this.host = host;
+	}
+	
 	public boolean isNativeMethod() {
 		return lineNumber == -2;
 	}
 
 	public String toString() {
 		StringBuilder b = new StringBuilder(className + "." + methodName);
+		if (host != null) {
+			b.append("@"+host);
+		}
 		if (isNativeMethod())
 			b.append("(Native Method");
 		else if (fileName != null && lineNumber >= 0)

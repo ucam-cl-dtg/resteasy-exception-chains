@@ -1,6 +1,8 @@
 package uk.ac.cam.cl.dtg.teaching.exceptions;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
@@ -40,6 +42,9 @@ public class RemoteFailureHandler implements
 	private static Logger log = LoggerFactory
 			.getLogger(RemoteFailureHandler.class);
 
+	@Context
+	private HttpServletRequest request;
+	
 	@Override
 	public Response toResponse(InternalServerErrorException t) {
 		Throwable message = appendStackTrace(readException(t), t);
@@ -59,7 +64,7 @@ public class RemoteFailureHandler implements
 	 * @param localException the local exception which we are handling
 	 * @return a new SerializableException representing both
 	 */
-	public static SerializableException appendStackTrace(
+	public SerializableException appendStackTrace(
 			SerializableException remoteException,
 			InternalServerErrorException localException) {
 
@@ -72,8 +77,9 @@ public class RemoteFailureHandler implements
 		for (SerializableStackTraceElement s : remoteStack) {
 			newStack[ptr++] = s;
 		}
+		String host = ExceptionHandler.requestToHost(request);
 		for (StackTraceElement s : localStack) {
-			newStack[ptr++] = new SerializableStackTraceElement(s);
+			newStack[ptr++] = new SerializableStackTraceElement(s,host);
 		}
 		remoteException.setSerializableStackTrace(newStack);
 		return remoteException;
@@ -90,7 +96,7 @@ public class RemoteFailureHandler implements
 	 *            the InternalServerErrorException which we've caught
 	 * @return a SerializableException collected from the remote server
 	 */
-	public static SerializableException readException(
+	public SerializableException readException(
 			InternalServerErrorException e) {
 		Response clientResponse = e.getResponse();
 		String contentType = clientResponse.getHeaders()
@@ -122,7 +128,6 @@ public class RemoteFailureHandler implements
 					contentType);
 		}
 
-		return new SerializableException(new Exception(message));
+		return new SerializableException(new Exception(message),ExceptionHandler.requestToHost(request));
 	}
-
 }

@@ -32,17 +32,17 @@ public class SerializableException extends Exception {
 
 	@JsonSerialize()
 	private SerializableStackTraceElement[] serializableStackTrace;
-
+	
 	public SerializableException() {
 	}
 
-	public SerializableException(Throwable toSerialize) {
+	public SerializableException(Throwable toSerialize,String host) {
 		this.message = toSerialize.getMessage();
 		this.className = toSerialize.getClass().getName();
 		if (toSerialize.getCause() != null) {
-			this.cause = new SerializableException(toSerialize.getCause());
+			this.cause = new SerializableException(toSerialize.getCause(),host);
 		}
-		setStackTrace(toSerialize.getStackTrace());
+		setStackTrace(toSerialize.getStackTrace(),host);
 	}
 
 	@JsonCreator
@@ -100,10 +100,14 @@ public class SerializableException extends Exception {
 
 	@Override
 	public synchronized Throwable initCause(Throwable cause) {
-		this.cause = new SerializableException(cause);
+		return initCause(cause,null);
+	}
+	
+	public synchronized Throwable initCause(Throwable cause, String host) {
+		this.cause = new SerializableException(cause,host);
 		return this;
 	}
-
+	
 	@Override
 	public String toString() {
 		String message = getLocalizedMessage();
@@ -151,9 +155,13 @@ public class SerializableException extends Exception {
 
 	@Override
 	public void setStackTrace(StackTraceElement[] stackTrace) {
+		setStackTrace(stackTrace,null);
+	}
+	
+	public void setStackTrace(StackTraceElement[] stackTrace, String host) {
 		this.serializableStackTrace = new SerializableStackTraceElement[stackTrace.length];
 		for (int i = 0; i < stackTrace.length; ++i) {
-			this.serializableStackTrace[i] = new SerializableStackTraceElement(stackTrace[i]);
+			this.serializableStackTrace[i] = new SerializableStackTraceElement(stackTrace[i],host);
 		}
 	}
 }
