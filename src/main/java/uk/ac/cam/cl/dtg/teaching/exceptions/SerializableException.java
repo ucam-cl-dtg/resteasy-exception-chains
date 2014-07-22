@@ -6,7 +6,7 @@ package uk.ac.cam.cl.dtg.teaching.exceptions;
  * @author acr31
  *
  */
-public class SerializableException  {
+class SerializableException  {
 
 	private String className;
 
@@ -16,10 +16,10 @@ public class SerializableException  {
 
 	private SerializableStackTraceElement[] stackTrace;
 	
-	public SerializableException() {
+	SerializableException() {
 	}
 
-	public SerializableException(Throwable toSerialize,String host) {
+	SerializableException(Throwable toSerialize,String host) {
 		this.message = toSerialize.getMessage();
 		this.className = toSerialize.getClass().getName();
 		if (toSerialize.getCause() != null) {
@@ -32,7 +32,7 @@ public class SerializableException  {
 		}
 	}
 
-	public SerializableException(
+	SerializableException(
 			String className,
 			String message,
 			SerializableException cause,

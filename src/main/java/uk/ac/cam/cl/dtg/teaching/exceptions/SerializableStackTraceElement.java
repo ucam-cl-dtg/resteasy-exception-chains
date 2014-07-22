@@ -6,7 +6,7 @@ package uk.ac.cam.cl.dtg.teaching.exceptions;
  * @author acr31
  *
  */
-public class SerializableStackTraceElement {
+class SerializableStackTraceElement {
 
 	private String className;
 
@@ -18,7 +18,7 @@ public class SerializableStackTraceElement {
 
 	private String host;
 	
-	public SerializableStackTraceElement(
+	SerializableStackTraceElement(
 			String className,
 			String methodName,
 			String fileName,
@@ -32,7 +32,7 @@ public class SerializableStackTraceElement {
 		this.host = host;
 	}
 
-	public SerializableStackTraceElement(StackTraceElement e, String host) {
+	SerializableStackTraceElement(StackTraceElement e, String host) {
 		this.className = e.getClassName();
 		this.methodName = e.getMethodName();
 		this.fileName = e.getFileName();
@@ -40,7 +40,7 @@ public class SerializableStackTraceElement {
 		this.host = host;
 	}
 
-	public SerializableStackTraceElement() {
+	SerializableStackTraceElement() {
 	}
 
 	public String getClassName() {
