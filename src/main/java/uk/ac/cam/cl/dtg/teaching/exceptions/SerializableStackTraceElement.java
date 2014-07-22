@@ -82,7 +82,8 @@ class SerializableStackTraceElement {
 	public void setHost(String host) {
 		this.host = host;
 	}
-	
+
+	@Override
 	public String toString() {
 		StringBuilder b = new StringBuilder(className + "." + methodName);
 		if (host != null) {
