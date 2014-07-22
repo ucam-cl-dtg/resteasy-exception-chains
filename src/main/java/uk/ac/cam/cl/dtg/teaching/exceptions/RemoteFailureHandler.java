@@ -47,7 +47,7 @@ public class RemoteFailureHandler implements
 	
 	@Override
 	public Response toResponse(InternalServerErrorException t) {
-		Throwable message = appendStackTrace(readException(t), t);
+		SerializableException message = appendStackTrace(readException(t), t);
 		return Response.serverError().entity(message)
 				.type(MediaType.APPLICATION_JSON).build();
 	}
@@ -69,7 +69,7 @@ public class RemoteFailureHandler implements
 			InternalServerErrorException localException) {
 
 		SerializableStackTraceElement[] remoteStack = remoteException
-				.getSerializableStackTrace();
+				.getStackTrace();
 		StackTraceElement[] localStack = localException.getStackTrace();
 		SerializableStackTraceElement[] newStack = new SerializableStackTraceElement[remoteStack.length
 				+ localStack.length];
@@ -81,7 +81,7 @@ public class RemoteFailureHandler implements
 		for (StackTraceElement s : localStack) {
 			newStack[ptr++] = new SerializableStackTraceElement(s,host);
 		}
-		remoteException.setSerializableStackTrace(newStack);
+		remoteException.setStackTrace(newStack);
 		return remoteException;
 	}
 

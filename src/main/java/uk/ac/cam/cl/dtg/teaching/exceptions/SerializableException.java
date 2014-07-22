@@ -1,37 +1,20 @@
 package uk.ac.cam.cl.dtg.teaching.exceptions;
 
-import java.io.OutputStreamWriter;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-
-import org.codehaus.jackson.annotate.JsonAutoDetect;
-import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
-import org.codehaus.jackson.annotate.JsonCreator;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-
 /**
- * An implementation of Exception which can be serialized to JSON and deserialized again.
+ * A class containing exception information which can be serialized to JSON and deserialized again.
  * 
  * @author acr31
  *
  */
-@JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE, creatorVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
-public class SerializableException extends Exception {
+public class SerializableException  {
 
-	private static final long serialVersionUID = 759370006263359407L;
-
-	@JsonSerialize
 	private String className;
 
-	@JsonSerialize
 	private String message;
 
-	@JsonSerialize
 	private SerializableException cause;
 
-	@JsonSerialize()
-	private SerializableStackTraceElement[] serializableStackTrace;
+	private SerializableStackTraceElement[] stackTrace;
 	
 	public SerializableException() {
 	}
@@ -42,20 +25,23 @@ public class SerializableException extends Exception {
 		if (toSerialize.getCause() != null) {
 			this.cause = new SerializableException(toSerialize.getCause(),host);
 		}
-		setStackTrace(toSerialize.getStackTrace(),host);
+		StackTraceElement[] stackTrace = toSerialize.getStackTrace();
+		this.stackTrace = new SerializableStackTraceElement[stackTrace.length];
+		for (int i = 0; i < stackTrace.length; ++i) {
+			this.stackTrace[i] = new SerializableStackTraceElement(stackTrace[i],host);
+		}
 	}
 
-	@JsonCreator
 	public SerializableException(
-			@JsonProperty("className") String className,
-			@JsonProperty("message") String message,
-			@JsonProperty("cause") SerializableException cause,
-			@JsonProperty("serializableStackTrace") SerializableStackTraceElement[] stackTrace) {
+			String className,
+			String message,
+			SerializableException cause,
+			SerializableStackTraceElement[] stackTrace) {
 		super();
 		this.className = className;
 		this.message = message;
 		this.cause = cause;
-		this.serializableStackTrace = stackTrace;
+		this.stackTrace = stackTrace;
 	}
 
 	public String getClassName() {
@@ -66,13 +52,13 @@ public class SerializableException extends Exception {
 		this.className = className;
 	}
 
-	public SerializableStackTraceElement[] getSerializableStackTrace() {
-		return serializableStackTrace;
+	public SerializableStackTraceElement[] getStackTrace() {
+		return stackTrace;
 	}
 
-	public void setSerializableStackTrace(
+	public void setStackTrace(
 			SerializableStackTraceElement[] serializableStackTrace) {
-		this.serializableStackTrace = serializableStackTrace;
+		this.stackTrace = serializableStackTrace;
 	}
 
 	public void setMessage(String message) {
@@ -83,85 +69,17 @@ public class SerializableException extends Exception {
 		this.cause = cause;
 	}
 
-	@Override
 	public String getMessage() {
 		return this.message;
 	}
 
-	@Override
-	public String getLocalizedMessage() {
-		return this.message;
-	}
-
-	@Override
-	public synchronized Throwable getCause() {
+	public synchronized SerializableException getCause() {
 		return this.cause;
-	}
-
-	@Override
-	public synchronized Throwable initCause(Throwable cause) {
-		return initCause(cause,null);
-	}
-	
-	public synchronized Throwable initCause(Throwable cause, String host) {
-		this.cause = new SerializableException(cause,host);
-		return this;
 	}
 	
 	@Override
 	public String toString() {
-		String message = getLocalizedMessage();
+		String message = getMessage();
 		return this.className + (message == null ? "" : ": " + message);
-	}
-
-	@Override
-	public void printStackTrace() {
-		printStackTrace(System.err);
-	}
-
-	@Override
-	public void printStackTrace(PrintStream s) {
-		printStackTrace(new PrintWriter(new OutputStreamWriter(s)));
-	}
-
-	@Override
-	public void printStackTrace(PrintWriter writer) {
-		synchronized (writer) {
-			writer.println(toString());
-			for (SerializableStackTraceElement s : serializableStackTrace) {
-				writer.println("\tat " + s);
-			}
-			writer.flush();
-		}
-	}
-
-	@Override
-	public synchronized Throwable fillInStackTrace() {
-		return this;
-	}
-
-	@Override
-	public StackTraceElement[] getStackTrace() {
-		StackTraceElement[] result = new StackTraceElement[serializableStackTrace.length];
-		for (int i = 0; i < result.length; ++i) {
-			result[i] = new StackTraceElement(
-					serializableStackTrace[i].getClassName(),
-					serializableStackTrace[i].getMethodName(),
-					serializableStackTrace[i].getFileName(),
-					serializableStackTrace[i].getLineNumber());
-		}
-		return result;
-	}
-
-	@Override
-	public void setStackTrace(StackTraceElement[] stackTrace) {
-		setStackTrace(stackTrace,null);
-	}
-	
-	public void setStackTrace(StackTraceElement[] stackTrace, String host) {
-		this.serializableStackTrace = new SerializableStackTraceElement[stackTrace.length];
-		for (int i = 0; i < stackTrace.length; ++i) {
-			this.serializableStackTrace[i] = new SerializableStackTraceElement(stackTrace[i],host);
-		}
 	}
 }
