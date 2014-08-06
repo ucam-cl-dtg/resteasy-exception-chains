@@ -6,7 +6,7 @@ package uk.ac.cam.cl.dtg.teaching.exceptions;
  * @author acr31
  *
  */
-class SerializableStackTraceElement {
+public class SerializableStackTraceElement {
 
 	private String className;
 

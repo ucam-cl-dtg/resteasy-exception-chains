@@ -6,7 +6,7 @@ package uk.ac.cam.cl.dtg.teaching.exceptions;
  * @author acr31
  *
  */
-class SerializableException  {
+public class SerializableException  {
 
 	private String className;
 
@@ -19,7 +19,7 @@ class SerializableException  {
 	SerializableException() {
 	}
 
-	SerializableException(Throwable toSerialize,String host) {
+	public SerializableException(Throwable toSerialize,String host) {
 		this.message = toSerialize.getMessage();
 		this.className = toSerialize.getClass().getName();
 		if (toSerialize.getCause() != null) {
