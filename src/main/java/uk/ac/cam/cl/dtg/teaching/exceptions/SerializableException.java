@@ -1,5 +1,8 @@
 package uk.ac.cam.cl.dtg.teaching.exceptions;
 
+import java.net.Inet4Address;
+import java.net.UnknownHostException;
+
 /**
  * A class containing exception information which can be serialized to JSON and deserialized again.
  * 
@@ -15,10 +18,22 @@ public class SerializableException  {
 	private SerializableException cause;
 
 	private SerializableStackTraceElement[] stackTrace;
-	
-	SerializableException() {
+		
+	public SerializableException() {
 	}
 
+	private static String getHostName() {
+		try {
+			return Inet4Address.getLocalHost().getHostName();
+		} catch (UnknownHostException e) {
+			throw new Error("Failed to find name for local host",e);
+		}
+	}
+	
+	public SerializableException(Throwable toSerialize) {
+		this(toSerialize,getHostName());
+	}
+	
 	public SerializableException(Throwable toSerialize,String host) {
 		this.message = toSerialize.getMessage();
 		this.className = toSerialize.getClass().getName();
