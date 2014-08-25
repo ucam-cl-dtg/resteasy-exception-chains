@@ -1,7 +1,7 @@
 package uk.ac.cam.cl.dtg.teaching.exceptions;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
  */
 @Provider
 public class RemoteFailureHandler implements
-		ExceptionMapper<InternalServerErrorException> {
+		ExceptionMapper<ClientErrorException> {
 
 	private static Logger log = LoggerFactory
 			.getLogger(RemoteFailureHandler.class);
@@ -46,7 +46,7 @@ public class RemoteFailureHandler implements
 	private HttpServletRequest request;
 	
 	@Override
-	public Response toResponse(InternalServerErrorException t) {
+	public Response toResponse(ClientErrorException t) {
 		SerializableException message = appendStackTrace(readException(t), t);
 		return Response.serverError().entity(message)
 				.type(MediaType.APPLICATION_JSON).build();
@@ -66,7 +66,7 @@ public class RemoteFailureHandler implements
 	 */
 	public SerializableException appendStackTrace(
 			SerializableException remoteException,
-			InternalServerErrorException localException) {
+			ClientErrorException localException) {
 
 		SerializableStackTraceElement[] remoteStack = remoteException
 				.getStackTrace();
@@ -97,7 +97,7 @@ public class RemoteFailureHandler implements
 	 * @return a SerializableException collected from the remote server
 	 */
 	public SerializableException readException(
-			InternalServerErrorException e) {
+			ClientErrorException e) {
 		Response clientResponse = e.getResponse();
 		String contentType = clientResponse.getHeaders()
 				.getFirst("Content-Type").toString();
