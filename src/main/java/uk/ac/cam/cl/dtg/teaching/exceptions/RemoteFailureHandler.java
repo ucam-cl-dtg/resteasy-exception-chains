@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
@@ -99,8 +100,12 @@ public class RemoteFailureHandler implements
 	public SerializableException readException(
 			WebApplicationException e) {
 		Response clientResponse = e.getResponse();
-		String contentType = clientResponse.getHeaders()
-				.getFirst("Content-Type").toString();
+		MultivaluedMap<String, Object> headers = clientResponse != null ? clientResponse.getHeaders() : null;
+		Object contentTypeObj = headers != null ? headers.getFirst("Content-type") : null;
+		if (contentTypeObj == null) {
+			return new SerializableException(e);
+		}
+		String contentType = contentTypeObj.toString();
 		if (contentType.startsWith("application/json")) {
 			// if they've sent us json then we'll assume they stuck with the API
 			// contract and have sent an ApiFailureMessage
