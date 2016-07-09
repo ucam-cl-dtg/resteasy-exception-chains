@@ -10,7 +10,7 @@ import java.net.UnknownHostException;
  *
  */
 public class SerializableException  {
-
+	
 	private String className;
 
 	private String message;
@@ -33,9 +33,14 @@ public class SerializableException  {
 	public SerializableException(Throwable toSerialize) {
 		this(toSerialize,getHostName());
 	}
-	
+
 	public SerializableException(Throwable toSerialize,String host) {
-		this.message = toSerialize.getMessage();
+		try {
+			this.message = toSerialize.getMessage();
+		}
+		catch (Throwable e) {
+			this.message = toSerialize.getClass().getName()+".getMessage() threw "+e.getClass().getName();
+		}
 		this.className = toSerialize.getClass().getName();
 		if (toSerialize.getCause() != null) {
 			this.cause = new SerializableException(toSerialize.getCause(),host);
