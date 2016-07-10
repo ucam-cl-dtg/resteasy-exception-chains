@@ -38,6 +38,9 @@ public class ExceptionHandler implements ExceptionMapper<Throwable> {
 		int statusCode = 500;
 		if (exception instanceof HttpStatusCode404) {
 			statusCode = 404;
+		} 
+		else if (exception instanceof HttpStatusCode403) {
+			statusCode = 403;
 		}
 		return Response.status(statusCode)
 				.entity(new SerializableException(exception,requestToHost(request)))
