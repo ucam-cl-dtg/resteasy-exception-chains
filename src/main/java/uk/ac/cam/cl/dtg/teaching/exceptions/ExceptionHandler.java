@@ -11,43 +11,43 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class makes sure that all exceptions are serialised as JSON in a format
- * which we understand.
- * <p>
- * Normally when an exception is thrown by resteasy code this results in an
- * error message in the server logs only. This exception handler ensures that
- * any exception is packaged (as a SerializableException) and then sent to the
- * client as JSON.
- * <p>
- * This should be registered with resteasy in your application class. 
- * 
+ * This class makes sure that all exceptions are serialised as JSON in a format which we understand.
+ *
+ * <p>Normally when an exception is thrown by resteasy code this results in an error message in the
+ * server logs only. This exception handler ensures that any exception is packaged (as a
+ * SerializableException) and then sent to the client as JSON.
+ *
+ * <p>This should be registered with resteasy in your application class.
+ *
  * @author acr31
- * 
  */
 @Provider
 public class ExceptionHandler implements ExceptionMapper<Throwable> {
 
-	protected Logger LOG = LoggerFactory.getLogger(ExceptionHandler.class);
-	
-	@Context
-	private HttpServletRequest request;
+  private Logger LOG = LoggerFactory.getLogger(ExceptionHandler.class);
 
-	@Override
-	public Response toResponse(Throwable exception) {
-		LOG.info("Throwing exception to client",exception);
-		int statusCode = 500;
-		if (exception instanceof HttpStatusCode404) {
-			statusCode = 404;
-		} 
-		else if (exception instanceof HttpStatusCode403) {
-			statusCode = 403;
-		}
-		return Response.status(statusCode)
-				.entity(new SerializableException(exception,requestToHost(request)))
-				.type(MediaType.APPLICATION_JSON).build();
-	}
-	
-	public static String requestToHost(HttpServletRequest request) {
-		return request.getServerName()+":"+request.getServerPort()+request.getRequestURI();
-	}
+  @Context private HttpServletRequest request;
+
+  @Override
+  public Response toResponse(Throwable exception) {
+    LOG.info("Throwing exception to client", exception);
+    return exceptionToResponse(exception, requestToHost(request));
+  }
+
+  public static Response exceptionToResponse(Throwable exception, String host) {
+    int statusCode = 500;
+    if (exception instanceof HttpStatusCode404) {
+      statusCode = 404;
+    } else if (exception instanceof HttpStatusCode403) {
+      statusCode = 403;
+    }
+    return Response.status(statusCode)
+        .entity(new SerializableException(exception, host))
+        .type(MediaType.APPLICATION_JSON)
+        .build();
+  }
+
+  static String requestToHost(HttpServletRequest request) {
+    return request.getServerName() + ":" + request.getServerPort() + request.getRequestURI();
+  }
 }
