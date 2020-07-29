@@ -3,7 +3,7 @@
     <groupId>uk.ac.cam.cl.dtg.web</groupId>
     <artifactId>resteasy-exception-chains</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.10</version>
+    <version>1.0.11-SNAPSHOT</version>
 
     <name>RESTEasy Exception Chains</name>
     <description>Library for serializing exceptions and relaying them to a client</description>
@@ -26,7 +26,7 @@
         <url>https://github.com/ucam-cl-dtg/resteasy-exception-chains.git</url>
         <developerConnection>scm:git:ssh://git@github.com/ucam-cl-dtg/resteasy-exception-chains.git
         </developerConnection>
-        <tag>resteasy-exception-chains-1.0.10</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <developers>
